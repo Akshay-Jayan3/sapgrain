@@ -43,10 +43,9 @@ export const useCursorAnimation = ({ dotRef, ringRef }: CursorRefs) => {
     const handleHover = () => {
       gsap.to(ring, {
         scale: 1.6,
-        '--glow-opacity': 1, // Intensify glow significantly
-        backgroundColor: 'rgba(198,166,100,0.8)', // More opaque golden tone
-        boxShadow: '0 0 25px rgba(198,166,100,0.9), 0 0 10px rgba(198,166,100,0.6) inset', // Enhanced glow with subtle inner shadow
-        duration: 0.4,
+        '--glow-opacity': 0.8,
+        backgroundColor: 'rgba(198,166,100,0.6)',
+        duration: 0.5,
         ease: 'power3.out',
       });
     };
@@ -56,8 +55,7 @@ export const useCursorAnimation = ({ dotRef, ringRef }: CursorRefs) => {
         scale: 1,
         '--glow-opacity': 0.3,
         backgroundColor: 'rgba(198,166,100,0.3)',
-        boxShadow: '0 0 15px rgba(198,166,100,0.3)', // Reset to original subtle glow
-        duration: 0.4,
+        duration: 0.5,
         ease: 'power3.out',
       });
     };

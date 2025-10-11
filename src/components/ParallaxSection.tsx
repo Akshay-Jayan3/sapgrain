@@ -14,7 +14,6 @@ interface ParallaxSectionProps {
   bgSpeed?: number;
   contentSpeed?: number;
   overlayColor?: string; // For subtle light shifts
-  contentClassName?: string; // To allow custom styling of the content div
 }
 
 const ParallaxSection: React.FC<ParallaxSectionProps> = ({
@@ -25,7 +24,6 @@ const ParallaxSection: React.FC<ParallaxSectionProps> = ({
   bgSpeed = 0.2,
   contentSpeed = 0,
   overlayColor,
-  contentClassName = '',
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -47,17 +45,17 @@ const ParallaxSection: React.FC<ParallaxSectionProps> = ({
     gsap.fromTo(
       section,
       {
-        opacity: 0.7, // Start slightly more faded
-        y: 70, // Start a bit further down
+        opacity: 0.8,
+        y: 50,
       },
       {
         opacity: 1,
         y: 0,
-        duration: 1.8, // Longer duration for elegance
+        duration: 1.5,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: section,
-          start: 'top bottom-=150', // Trigger earlier
+          start: 'top bottom-=100',
           toggleActions: 'play none none reverse',
         },
       }
@@ -71,8 +69,8 @@ const ParallaxSection: React.FC<ParallaxSectionProps> = ({
           opacity: 0,
         },
         {
-          opacity: 0.4, // Slightly more pronounced overlay
-          duration: 1.8,
+          opacity: 0.3,
+          duration: 1.5,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: section,
@@ -100,7 +98,7 @@ const ParallaxSection: React.FC<ParallaxSectionProps> = ({
           style={{ backgroundColor: overlayColor, opacity: 0 }}
         />
       )}
-      <div ref={contentRef} className={`relative z-10 w-full h-full flex flex-col items-center justify-center ${contentClassName}`}>
+      <div ref={contentRef} className="relative z-10 w-full h-full flex  flex-col items-center justify-center">
         {children}
       </div>
     </section>

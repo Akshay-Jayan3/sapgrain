@@ -15,12 +15,9 @@ body {
 body {
   margin: 0;
   padding: 0;
-  background-color: #1A1A1A; /* Deep, rich charcoal/graphite */
+  background-color: #0d0d0d; /* Brand background color */
   color: #f2f0e9; /* Brand text color */
   font-family: 'Poppins', sans-serif; /* Default body font */
-  /* Adding a very subtle, almost imperceptible texture overlay */
-  background-image: url('/images/subtle-noise.png'); /* Placeholder for a subtle noise texture */
-  background-blend-mode: overlay; /* Blends the noise subtly */
 }
 
 /* Hide scrollbars for a cleaner look */

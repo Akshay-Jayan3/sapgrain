@@ -46,12 +46,14 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({ items }) => {
 
   const handleHover = (e: React.MouseEvent) => {
     gsap.to(e.currentTarget, {
-      scale: 1.03, // Slightly less aggressive scale
-      rotate: gsap.utils.random(-1, 1), // More subtle rotation
-      duration: 0.4,
-      ease: 'power3.out',
-      boxShadow: '0 15px 40px rgba(198,166,100,0.5), 0 0 20px rgba(198,166,100,0.3) inset', // More intense, refined glow
+      scale: 1.05,
+      rotate: gsap.utils.random(-2, 2),
+      duration: 0.3,
+      ease: 'power2.out',
+      boxShadow: '0 10px 30px rgba(198,166,100,0.4)',
     });
+    // Assume a global cursor change mechanism or direct manipulation for now
+    // For a real app, you'd use context or a global state for cursor changes
     document.body.style.setProperty('--cursor-color', '#c6a664');
   };
 
@@ -59,8 +61,8 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({ items }) => {
     gsap.to(e.currentTarget, {
       scale: 1,
       rotate: 0,
-      duration: 0.4,
-      ease: 'power3.out',
+      duration: 0.3,
+      ease: 'power2.out',
       boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
     });
     document.body.style.setProperty('--cursor-color', '#f2f0e9');
@@ -71,7 +73,7 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({ items }) => {
       {items.map(item => (
         <div
           key={item.id}
-          className="group relative overflow-hidden rounded-lg shadow-lg bg-gray-800 interactive transform transition-all duration-300 ease-out"
+          className="group relative overflow-hidden rounded-lg shadow-lg bg-gray-800 interactive"
           onMouseEnter={handleHover}
           onMouseLeave={handleUnhover}
         >
@@ -80,11 +82,11 @@ const GalleryGrid: React.FC<GalleryGridProps> = ({ items }) => {
             alt={item.alt}
             width={500}
             height={300}
-            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" // Less aggressive image scale
+            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
           />
-          <div className="p-6">
-            <h3 className="text-xl font-heading font-semibold text-accent mb-2">{item.title}</h3>
-            <p className="text-sm text-gray-400 font-body">A captivating piece of art.</p>
+          <div className="p-4">
+            <h3 className="text-xl font-semibold text-text mb-2">{item.title}</h3>
+            <p className="text-sm text-gray-400">A captivating piece of art.</p>
           </div>
         </div>
       ))}

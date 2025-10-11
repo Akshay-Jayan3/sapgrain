@@ -42,11 +42,11 @@ const JournalCard: React.FC<JournalCardProps> = ({
 
   const handleHover = (e: React.MouseEvent) => {
     gsap.to(e.currentTarget, {
-      y: -8, // Subtle lift
-      boxShadow: '0 15px 40px rgba(198,166,100,0.5), 0 0 20px rgba(198,166,100,0.3) inset', // Enhanced glow
-      scale: 1.01, // Very subtle scale
-      duration: 0.4,
-      ease: 'power3.out',
+      y: -10,
+      boxShadow: '0 15px 30px rgba(198,166,100,0.4)',
+      scale: 1.02,
+      duration: 0.3,
+      ease: 'power2.out',
     });
   };
 
@@ -55,8 +55,8 @@ const JournalCard: React.FC<JournalCardProps> = ({
       y: 0,
       boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
       scale: 1,
-      duration: 0.4,
-      ease: 'power3.out',
+      duration: 0.3,
+      ease: 'power2.out',
     });
   };
 
@@ -76,10 +76,10 @@ const JournalCard: React.FC<JournalCardProps> = ({
           width={400}
           height={250}
           objectFit="cover"
-          className="w-full h-48 transition-transform duration-300 group-hover:scale-105" // Subtle image scale on hover
+          className="w-full h-48"
         />
         <div className="p-6">
-          <h3 className="font-heading text-2xl font-semibold text-accent mb-2">{title}</h3>
+          <h3 className="font-heading text-2xl text-text mb-2">{title}</h3>
           <p className="font-body text-gray-400 text-sm">{excerpt}</p>
         </div>
       </div>
