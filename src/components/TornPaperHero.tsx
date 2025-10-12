@@ -390,7 +390,7 @@ const TornPaperHero: React.FC = () => {
         y={120}
         zIndex={5}
         color="bg-amber-300"
-        className="w-36 h-28 bottom-32 right-32"
+        className="w-36 h-28 bottom-10 right-8"
         style={{
           transform: `translate(${mousePosition.x * -3}px, ${mousePosition.y * -3}px)`,
         }}
