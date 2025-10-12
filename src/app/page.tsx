@@ -10,6 +10,7 @@ import { useRevealText } from '@/animations/useRevealText';
 import GalleryGrid from '@/components/GalleryGrid';
 import StudioGallery from '@/components/StudioGallery';
 import JournalCard from '@/components/JournalCard';
+import TornPaperHero from '@/components/TornPaperHero';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,16 +64,10 @@ const Home: React.FC = () => {
   const ctaRef = useRef<HTMLAnchorElement>(null);
   const aboutTextRef1 = useRef<HTMLParagraphElement>(null);
   const aboutTextRef2 = useRef<HTMLParagraphElement>(null);
-  const craftTextRef = useRef<HTMLParagraphElement>(null);
-  const techTextRef = useRef<HTMLParagraphElement>(null);
-  const harmonyTextRef = useRef<HTMLParagraphElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   useRevealText({ target: aboutTextRef1 as React.RefObject<HTMLElement>, delay: 0.2 });
   useRevealText({ target: aboutTextRef2 as React.RefObject<HTMLElement>, delay: 0.4 });
-  useRevealText({ target: craftTextRef as React.RefObject<HTMLElement>, delay: 0.2 });
-  useRevealText({ target: techTextRef as React.RefObject<HTMLElement>, delay: 0.4 });
-  useRevealText({ target: harmonyTextRef as React.RefObject<HTMLElement>, delay: 0.6 });
 
   useEffect(() => {
     // Initial animation for tagline and CTA
@@ -133,28 +128,7 @@ const Home: React.FC = () => {
   return (
     <main className="relative bg-black">
       {/* Hero Section */}
-      <ParallaxSection
-        id="hero"
-        bgImage="/images/wood-grain.png"
-        bgSpeed={0.3}
-        className="h-screen flex flex-col items-center justify-center text-center"
-        overlayColor="rgba(0,0,0,0.2)"
-      >
-        <div className="mb-8">
-          <h1 className="font-heading text-6xl font-bold text-accent interactive">Sapgrain</h1>
-        </div>
-
-        <SectionHeading level="h2" className="text-5xl font-body mb-8 text-text-light" delay={0.8}>
-          Where Craft Meets Code.
-        </SectionHeading>
-
-        <Link
-          href="#about"
-          className="bg-accent text-background font-bold py-3 px-8 rounded-full text-lg interactive hover:scale-105 transition-transform duration-300 ease-out shadow-lg hover:shadow-xl"
-        >
-          Explore the Studio
-        </Link>
-      </ParallaxSection>
+      <TornPaperHero />
 
       {/* About Section */}
       <ParallaxSection
@@ -197,79 +171,6 @@ const Home: React.FC = () => {
             Our Creations
           </SectionHeading>
           <GalleryGrid items={creations} />
-        </div>
-      </ParallaxSection>
-
-      {/* Philosophy Section */}
-      <ParallaxSection
-        id="philosophy"
-        className="min-h-screen flex items-center justify-center py-20 px-4 md:px-8 bg-background-dark"
-        overlayColor="rgba(5, 0, 10, 0.1)"
-      >
-        <div className="container mx-auto text-center">
-          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-accent mb-6">
-            Our Philosophy
-          </SectionHeading>
-          <p className="font-body text-lg leading-relaxed max-w-3xl mx-auto text-text mb-12">
-            At Sapgrain, we believe in the profound dialogue between the tangible and the digital, the ancient craft and future technology. Our philosophy is rooted in three core pillars:
-          </p>
-        </div>
-      </ParallaxSection>
-
-      <ParallaxSection
-        id="philosophy-craft"
-        className="min-h-screen flex items-center justify-center py-20 px-4 md:px-8 bg-background-darker"
-        bgImage="/images/craft-bg.png"
-        bgSpeed={0.2}
-        overlayColor="rgba(10, 0, 0, 0.2)"
-      >
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="text-text md:text-right">
-            <SectionHeading level="h3" className="text-4xl md:text-5xl font-bold text-accent mb-4">
-              Craft
-            </SectionHeading>
-            <p ref={craftTextRef} className="font-body text-lg leading-relaxed">
-              The soul of Sapgrain lies in the art of creation by hand. We honor the legacy of artisans, embracing traditional techniques to imbue every piece with authenticity and a timeless spirit. This dedication to craft ensures that even our digital manifestations carry the warmth and imperfection of human touch.
-            </p>
-          </div>
-          <div className="h-80 w-full bg-gray-700 rounded-lg shadow-xl" />
-        </div>
-      </ParallaxSection>
-
-      <ParallaxSection
-        id="philosophy-technology"
-        className="min-h-screen flex items-center justify-center py-20 px-4 md:px-8 bg-background-dark"
-        bgImage="/images/tech-bg.png"
-        bgSpeed={0.1}
-        overlayColor="rgba(0, 0, 10, 0.2)"
-      >
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="h-80 w-full bg-gray-700 rounded-lg shadow-xl" />
-          <div className="text-text">
-            <SectionHeading level="h3" className="text-4xl md:text-5xl font-bold text-accent mb-4">
-              Technology
-            </SectionHeading>
-            <p ref={techTextRef} className="font-body text-lg leading-relaxed">
-              Beyond tradition, we explore the frontiers of digital innovation. Technology serves as our canvas, allowing us to extend the boundaries of perception and interaction. From immersive web experiences to interactive installations, we harness code to amplify the essence of craft, making it accessible and engaging in new dimensions.
-            </p>
-          </div>
-        </div>
-      </ParallaxSection>
-
-      <ParallaxSection
-        id="philosophy-harmony"
-        className="min-h-screen flex items-center justify-center py-20 px-4 md:px-8 bg-background-darker"
-        bgImage="/images/harmony-bg.png"
-        bgSpeed={0.3}
-        overlayColor="rgba(10, 10, 0, 0.2)"
-      >
-        <div className="container mx-auto text-center">
-          <SectionHeading level="h3" className="text-4xl md:text-5xl font-bold text-accent mb-4">
-            Harmony
-          </SectionHeading>
-          <p ref={harmonyTextRef} className="font-body text-lg leading-relaxed max-w-3xl mx-auto text-text">
-            Our ultimate pursuit is harmony – the seamless integration of art and science, human ingenuity and digital precision. Sapgrain stands as a testament to this balance, where every pixel is imbued with purpose, and every interaction resonates with the spirit of craftsmanship. We invite you to experience this synthesis, where the past and future converge in a beautiful, living present.
-          </p>
         </div>
       </ParallaxSection>
 

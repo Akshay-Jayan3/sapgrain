@@ -14,7 +14,6 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
     <html lang="en">
       <body>
         <CustomCursor />
-        <Navbar />
         {children}
         <Footer />
       </body>
