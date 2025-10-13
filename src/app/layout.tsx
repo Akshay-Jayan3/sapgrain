@@ -5,7 +5,7 @@ import Footer from '@/components/Footer';
 import CustomCursor from '@/components/CustomCursor';
 
 export const metadata: Metadata = {
-  title: "Sapgrain - Where Craft Meets Code",
+  title: "Sapgrain - Where Imagination Takes Shape",
   description: "A modern digital experience merging art, craft, and technology into an immersive web presence.",
 };
 
