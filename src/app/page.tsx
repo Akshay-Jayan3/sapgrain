@@ -7,13 +7,12 @@ import ParallaxSection from '@/components/ParallaxSection';
 import SectionHeading from '@/components/SectionHeading';
 import Image from 'next/image';
 import { useRevealText } from '@/animations/useRevealText';
-import GalleryGrid from '@/components/GalleryGrid';
-import StudioGallery from '@/components/StudioGallery';
-import JournalCard from '@/components/JournalCard';
+
 import TornPaperHero from '@/components/TornPaperHero';
 import TornPaper from '@/components/TornPaper';
 import FramedCreation from '@/components/FramedCreation';
 import CrumpledPaperNote from '@/components/CrumpledPaperNote';
+import StoriesSection from '@/components/StoriesSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -285,15 +284,14 @@ const Home: React.FC = () => {
       </section>
 
       {/* Creations Section */}
-      <section id="creations" className="relative py-24 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
-        <div className="absolute inset-0" style={{ backgroundImage: 'url(/images/wood-grain.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1 }} />
-        <div className="container mx-auto relative">
+      <section id="creations">
+        <div className="absolute inset-0"  />
+        <div className="container mx-auto relative p-16" style={{ backgroundImage: 'url(/images/wallpaper-bg.png)', backgroundSize: 'cover' }}>
           <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-amber-600 mb-12 text-center">
             Our Creations
           </SectionHeading>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12">
             {creations.map((item, index) => {
-              const isPaper = index % 3 === 1; // mix modes
               const sizeClass = index % 4 === 0 ? 'sm:col-span-1 lg:col-span-1 lg:row-span-1' : index % 4 === 1 ? 'sm:col-span-1 lg:col-span-1' : index % 4 === 2 ? 'sm:col-span-1' : 'sm:col-span-1';
               const offsetClass = index % 6 === 0 ? 'translate-y-2' : index % 6 === 3 ? '-translate-y-4' : '';
               return (
@@ -303,7 +301,7 @@ const Home: React.FC = () => {
                   alt={item.alt}
                   title={item.title}
                   index={index}
-                  displayMode={isPaper ? 'paper' : 'framed'}
+                  displayMode="framed"
                   className={`${sizeClass} ${offsetClass}`}
                 />
               );
@@ -313,21 +311,19 @@ const Home: React.FC = () => {
       </section>
 
       {/* Studio Section */}
-      <section id="studio" className="relative py-24 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
-        <div className="absolute inset-0" style={{ backgroundImage: 'url(/images/wood-grain.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1 }} />
+      <section id="studio" className="relative p-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+        <div className="absolute inset-0"/>
         <div className="container mx-auto relative">
           <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-amber-600 mb-12 text-center">
             Studio Notes
           </SectionHeading>
 
           {/* Vision Board - Wood Investigation Style */}
-          <div className="relative rounded-lg p-8 md:p-12 mb-16 shadow-2xl min-h-[800px] md:min-h-[900px]" style={{
-            backgroundImage: 'url(/images/wood-grain.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}>
-            {/* Wood grain overlay for depth */}
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-amber-800/20 to-amber-900/30" />
+          <div className="relative p-8 md:p-12 mb-16 shadow-2xl min-h-[800px] md:min-h-[900px] bg-gradient-to-br from-[#B88A6F] to-[#7C6A4E] border-[20px] border-[#A0886C]">
+            {/* Wood grain overlay for depth & center color */}
+            <div className="absolute inset-0 shadow-inner-xl" style={{
+              background: "radial-gradient(circle at center, #d2b48c 20%, #7b3f00 60%, #000 100%)"
+            }} />
 
             {/* Investigation strings - more visible web */}
             <div className="absolute inset-0 pointer-events-none">
@@ -708,32 +704,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
-
-      {/* Journal Section */}
-      <ParallaxSection
-        id="journal"
-        className="min-h-screen py-20 px-4 md:px-8 bg-background-dark"
-        overlayColor="rgba(0,0,0,0.1)"
-      >
-        <div className="container mx-auto text-center">
-          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-accent mb-12">
-            Journal & Stories
-          </SectionHeading>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {journalEntries.map((entry, index) => (
-              <JournalCard
-                key={entry.id}
-                title={entry.title}
-                excerpt={entry.excerpt}
-                imageUrl={entry.imageUrl}
-                slug={entry.slug}
-                delay={index * 0.15}
-              />
-            ))}
-          </div>
-        </div>
-      </ParallaxSection>
+      <StoriesSection/>
     </main>
   );
 };
