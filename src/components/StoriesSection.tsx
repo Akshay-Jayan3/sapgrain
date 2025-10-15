@@ -84,10 +84,10 @@ const StoriesSection: React.FC = () => {
   return (
     <section id="stories"
       ref={sectionRef}
-      className="py-20 bg-[url('/images/wood-grain.png')] bg-cover bg-fixed text-gray-800"
+      className="py-10 bg-[url('/images/lined-paper.png')] bg-cover text-gray-800"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-5xl font-bold font-serif text-center mb-16 text-[#7C6A4E] drop-shadow-lg">
+        <h2 className="text-5xl font-bold font-serif text-center mb-16 text-gray-800 drop-shadow-lg">
           Stories We Carve
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center">
@@ -99,7 +99,6 @@ const StoriesSection: React.FC = () => {
                 title={story.title}
                 excerpt={story.excerpt}
                 ctaLink={story.ctaLink}
-                coverImage={story.coverImage}
               />
             </div>
           ))}

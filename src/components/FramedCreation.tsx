@@ -44,7 +44,7 @@ const FramedCreation: React.FC<FramedCreationProps> = ({ src, alt, title, index 
   return (
     <div ref={rootRef} className={`relative mx-auto w-full aspect-[4/5] ${className}`}>
       {displayMode === 'framed' && (
-        <div className="absolute inset-3 md:inset-4 bg-white shadow-xl border-8 border-stone-200 z-[2]">
+        <div className="absolute inset-3 md:inset-4 bg-white shadow-2xl border-8 border-stone-200 z-[2]">
           <div className="relative w-full h-full border border-stone-300 overflow-hidden">
             <Image src={src} alt={alt} fill className="object-cover" />
           </div>
@@ -67,7 +67,7 @@ const FramedCreation: React.FC<FramedCreationProps> = ({ src, alt, title, index 
       </div> */}
 
       {title && (
-        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-stone-800 text-stone-100 text-sm px-3 py-1 rounded shadow-md">
+        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-amber-600 text-stone-100 text-sm px-3 py-1 rounded shadow-md">
           {title}
         </div>
       )}

@@ -81,12 +81,7 @@ const TornPaperHero: React.FC = () => {
   return (
     <div 
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50"
-      style={{
-        backgroundImage: 'url(/images/wood-grain.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
+      className="relative h-screen w-full overflow-hidden bg-[url('/images/crumpled-paper.png')] bg-cover bg-fixed"
     >
       {/* Background paper layers */}
       <TornPaper

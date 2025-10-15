@@ -5,10 +5,9 @@ interface BookCardProps {
   title: string;
   excerpt: string;
   ctaLink: string;
-  coverImage?: string; // Optional: for custom book cover images
 }
 
-const BookCard: React.FC<BookCardProps> = ({ title, excerpt, ctaLink, coverImage }) => {
+const BookCard: React.FC<BookCardProps> = ({ title, excerpt, ctaLink }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -46,8 +45,7 @@ const BookCard: React.FC<BookCardProps> = ({ title, excerpt, ctaLink, coverImage
       rotateY: rotateY + (isFlipped ? 180 : 0), // Maintain flip rotation
       scale: 1.03,
       duration: 0.3,
-      ease: "power1.out"
-    });
+      ease:"sine.in"    });
   };
 
   const handleMouseLeave = () => {
@@ -64,34 +62,37 @@ const BookCard: React.FC<BookCardProps> = ({ title, excerpt, ctaLink, coverImage
   return (
     <div
       ref={cardRef}
-      className="relative w-72 h-96 perspective-1000 cursor-pointer will-change-transform rounded-lg"
+      className="relative w-72 h-72 perspective-1000 cursor-pointer will-change-transform rounded-lg"
       onClick={handleFlip}
-      onMouseEnter={() => !isFlipped && setIsFlipped(true)}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       style={{ transformStyle: "preserve-3d" }}
     >
       {/* Front Cover */}
       <div
-        className="absolute w-full h-full bg-cover bg-center rounded-lg shadow-lg flex items-center justify-center p-6 backface-hidden"
-        style={{ backgroundImage: `url(${coverImage || '/images/wood-grain.png'})`, transform: 'rotateY(0deg)' }}
+        className="absolute w-full h-full bg-contain bg-no-repeat rounded-lg shadow-lg flex items-center justify-center p-6 backface-hidden bg-[url('/images/book-cover.png')]"
+        style={{ transform: 'rotateY(0deg)' }}
       >
-        <h3 className="text-3xl font-serif text-[#F5F1E9] text-center drop-shadow-md">
-          {title}
-        </h3>
+        <div className="flex flex-col items-center justify-between w-full h-full text-yellow-200">
+          <p className="font-body text-xs md:text-sm mb-1">THE ART OF CREATION</p>
+          <h3 className="font-heading text-xl md:text-3xl font-bold text-center leading-tight mb-2">
+            {title}
+          </h3>
+          <p className="font-body text-xs md:text-sm">OCTOBER 2025 | VOL. 1</p>
+        </div>
       </div>
 
       {/* Inner Page (Back Side) */}
       <div
-        className="absolute w-full h-full bg-[#F5F1E9] rounded-lg shadow-lg p-6 flex flex-col justify-between items-center backface-hidden"
+        className="absolute w-full h-full bg-[#F5F1E9] rounded-lg shadow-lg p-6 flex flex-col justify-between items-center backface-hidden border-2 border-stone-800"
         style={{ transform: 'rotateY(180deg)' }}
       >
-        <p className="text-gray-800 font-serif text-lg text-center leading-relaxed">
+        <p className="text-gray-600 font-body text-base text-left leading-relaxed flex-grow overflow-y-auto mb-4">
           {excerpt}
         </p>
         <a
           href={ctaLink}
-          className="mt-4 px-6 py-3 bg-[#7C6A4E] text-[#F5F1E9] rounded-full text-lg font-medium hover:bg-[#60523C] transition-colors duration-300"
+          className="mt-4 px-4 py-2 bg-amber-600 text-white rounded-full text-sm font-medium hover:bg-amber-800 transition-colors duration-300 self-center"
         >
           Read Story
         </a>

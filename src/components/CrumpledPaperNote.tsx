@@ -18,6 +18,7 @@ interface CrumpledPaperNoteProps {
   enterFrom?: 'left' | 'right' | 'bottom' | 'none';
   index?: number;
   children?: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
 const tapeClassByColor: Record<string, string> = {
@@ -39,6 +40,7 @@ const CrumpledPaperNote: React.FC<CrumpledPaperNoteProps> = ({
   enterFrom = 'left',
   index = 0,
   children,
+  style,
 }) => {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -86,7 +88,7 @@ const CrumpledPaperNote: React.FC<CrumpledPaperNoteProps> = ({
   const tapeCls = tapeClassByColor[tapeColor];
 
   return (
-    <div ref={rootRef} className={`relative ${className}`}>
+    <div ref={rootRef} className={`relative ${className}`} style={style}>
       <TornPaper animateOnMount={false} rotation={-2} scale={1} x={0} y={0} zIndex={1} color="bg-amber-50" className="inset-0 w-full h-full paper-crumple paper-distort paper-shadow-natural">
         <div className="w-full h-full p-3 md:p-4">
           {title && <div className="font-heading text-sm md:text-base text-stone-800 mb-1">{title}</div>}

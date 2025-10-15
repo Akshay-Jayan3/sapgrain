@@ -15,11 +15,9 @@ body {
 body {
   margin: 0;
   padding: 0;
-  background-image: url('/images/wood-grain.png'); /* Brand background color */
+  background-image: url('/images/wallpaper-bg.png'); 
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
+  background-attachment: fixed;
   color: #f2f0e9; /* Brand text color */
   font-family: 'Poppins', sans-serif; /* Default body font */
 }

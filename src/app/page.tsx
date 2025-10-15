@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -64,14 +64,21 @@ const journalEntries = [
 const Home: React.FC = () => {
   const taglineRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
-  const aboutTextRef1 = useRef<HTMLParagraphElement>(null);
-  const aboutTextRef2 = useRef<HTMLParagraphElement>(null);
   const aboutSectionRef = useRef<HTMLElement>(null);
   // We will target About papers via class selectors instead of React refs
   const formRef = useRef<HTMLFormElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  useRevealText({ target: aboutTextRef1 as React.RefObject<HTMLElement>, delay: 0.2 });
-  useRevealText({ target: aboutTextRef2 as React.RefObject<HTMLElement>, delay: 0.4 });
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      setMousePosition({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   useEffect(() => {
     // Initial animation for tagline and CTA
@@ -131,8 +138,38 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     // Scroll-triggered animations for About papers and text
-    if (!aboutSectionRef.current) return;
+    const aboutSection = aboutSectionRef.current;
+    if (!aboutSection) return;
+
     const ctx = gsap.context(() => {
+      // Paper roll down animation for the entire about section content
+      const aboutContainer = aboutSection.querySelector('.container');
+      if (aboutContainer) {
+        gsap.fromTo(
+          aboutContainer,
+          {
+            y: -aboutContainer.clientHeight,
+            rotationX: 90, // Start rolled up (90 degrees rotated on X-axis)
+            transformOrigin: 'top center',
+            opacity: 0,
+          },
+          {
+            y: 0,
+            rotationX: 0, // End unrolled
+            opacity: 1,
+            duration: 4.5, // Further increased duration for an even slower animation
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: aboutSection,
+              start: 'top bottom',
+              end: 'center center',
+              scrub: 2, // Increased for a smoother, more delayed feel
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
       const leftPapers = gsap.utils.toArray<HTMLElement>('.about-paper-left');
       leftPapers.forEach((el) => {
         gsap.fromTo(
@@ -146,7 +183,7 @@ const Home: React.FC = () => {
             duration: 1.1,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: aboutSectionRef.current,
+              trigger: aboutSection,
               start: 'top 75%',
               toggleActions: 'play none none reverse',
             },
@@ -167,7 +204,7 @@ const Home: React.FC = () => {
             duration: 1.1,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: aboutSectionRef.current,
+              trigger: aboutSection,
               start: 'top 75%',
               toggleActions: 'play none none reverse',
             },
@@ -188,7 +225,7 @@ const Home: React.FC = () => {
             duration: 1.2,
             ease: 'back.out(1.4)',
             scrollTrigger: {
-              trigger: aboutSectionRef.current,
+              trigger: aboutSection,
               start: 'top 70%',
               toggleActions: 'play none none reverse',
             },
@@ -196,44 +233,7 @@ const Home: React.FC = () => {
         );
       });
 
-      if (aboutTextRef1.current) {
-        gsap.fromTo(
-          aboutTextRef1.current,
-          { y: 20, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            delay: 0.1,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: aboutSectionRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-      }
-
-      if (aboutTextRef2.current) {
-        gsap.fromTo(
-          aboutTextRef2.current,
-          { y: 20, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            delay: 0.25,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: aboutSectionRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-      }
-    }, aboutSectionRef);
+    }, aboutSection);
 
     return () => ctx.revert();
   }, []);
@@ -244,12 +244,12 @@ const Home: React.FC = () => {
       <TornPaperHero />
 
       {/* About Section (Torn Paper layout) */}
-      <section id="about" ref={aboutSectionRef} className="relative min-h-screen w-full overflow-hidden bg-background-dark py-24">
-        <div className="absolute inset-0" style={{ backgroundImage: 'url(/images/wood-grain.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.05 }} />
+      <section id="about" ref={aboutSectionRef} className="relative w-full overflow-hidden py-24 bg-[url('/images/wood-grain.png')] bg-cover bg-fixed">
+        <div className="absolute inset-0" />
 
         {/* Background torn paper layers */}
         <div className="container mx-auto relative">
-          <div className="relative h-[700px] md:h-[600px]">
+          <div className="relative h-[700px] md:h-[600px] origin-top">
             <TornPaper animateOnMount={false} rotation={-6} scale={1.05} x={0} y={0} zIndex={1} color="bg-amber-100" className="about-paper-left w-72 h-64 top-8 left-6" />
             <TornPaper animateOnMount={false} rotation={9} scale={0.9} x={0} y={0} zIndex={2} color="bg-orange-100" className="about-paper-right w-64 h-56 top-20 right-10" />
             <TornPaper animateOnMount={false} rotation={12} scale={0.7} x={0} y={0} zIndex={3} color="bg-yellow-100" className="about-paper-left w-52 h-44 bottom-10 left-12" />
@@ -261,10 +261,10 @@ const Home: React.FC = () => {
                   <SectionHeading level="h2" className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
                     Our Journey
                   </SectionHeading>
-                  <p ref={aboutTextRef1} className="font-body text-base md:text-lg leading-relaxed text-gray-700 mb-4 opacity-0">
+                  <p className="font-body text-base md:text-lg leading-relaxed text-gray-700 mb-4">
                     Sapgrain began as a humble workshop, a sanctuary where raw materials were transformed into objects of beauty and purpose. Our hands, guided by a passion for traditional craftsmanship, meticulously shaped wood, clay, and pigment, breathing life into each creation.
                   </p>
-                  <p ref={aboutTextRef2} className="font-body text-base md:text-lg leading-relaxed text-gray-700 opacity-0">
+                  <p className="font-body text-base md:text-lg leading-relaxed text-gray-700">
                     Over time, we realized the immense potential of merging our handcrafted ethos with the boundless possibilities of the digital realm. This journey from workshop to web has allowed us to share our philosophy and creations with a wider audience, inviting you into an immersive experience where the tactile meets the technological.
                   </p>
                 </div>
@@ -286,8 +286,8 @@ const Home: React.FC = () => {
       {/* Creations Section */}
       <section id="creations">
         <div className="absolute inset-0"  />
-        <div className="container mx-auto relative p-16" style={{ backgroundImage: 'url(/images/wallpaper-bg.png)', backgroundSize: 'cover' }}>
-          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-amber-600 mb-12 text-center">
+        <div className="container mx-auto relative p-16">
+          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-gray-800 mb-12 text-center">
             Our Creations
           </SectionHeading>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12">
@@ -311,18 +311,18 @@ const Home: React.FC = () => {
       </section>
 
       {/* Studio Section */}
-      <section id="studio" className="relative p-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+      <section id="studio" className="relative px-20 py-10" >
         <div className="absolute inset-0"/>
         <div className="container mx-auto relative">
-          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-amber-600 mb-12 text-center">
+          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-gray-800 mb-12 text-center">
             Studio Notes
           </SectionHeading>
 
           {/* Vision Board - Wood Investigation Style */}
-          <div className="relative p-8 md:p-12 mb-16 shadow-2xl min-h-[800px] md:min-h-[900px] bg-gradient-to-br from-[#B88A6F] to-[#7C6A4E] border-[20px] border-[#A0886C]">
+          <div className="relative p-8 md:p-12 mb-16 min-h-[800px] md:min-h-[900px] border-[20px] border-[#6c5234] shadow-2xl/80">
             {/* Wood grain overlay for depth & center color */}
             <div className="absolute inset-0 shadow-inner-xl" style={{
-              background: "radial-gradient(circle at center, #d2b48c 20%, #7b3f00 60%, #000 100%)"
+              background: "radial-gradient(circle at center, #d2b48c 10%, #7b3f00 40%, #000 100%)"
             }} />
 
             {/* Investigation strings - more visible web */}
@@ -350,7 +350,11 @@ const Home: React.FC = () => {
 
             {/* Central Product Photo - Large and Prominent */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-              <div className="relative">
+              <div className="relative"
+                style={{
+                  transform: `translate(${mousePosition.x * 10}px, ${mousePosition.y * 10}px)`,
+                }}
+              >
                 <img src="/images/creation1.png" alt="Featured Creation" className="w-48 h-48 object-cover rounded-lg shadow-2xl border-4 border-white" />
                 <div className="absolute -top-3 -right-3 w-10 h-10 bg-red-500 rounded-full border-4 border-white shadow-lg"></div>
                 <div className="absolute -bottom-3 -left-3 bg-yellow-200 px-4 py-2 rounded shadow-lg transform -rotate-3">
@@ -368,7 +372,11 @@ const Home: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12 relative" style={{ zIndex: 2 }}>
               {/* Top Left - Tools */}
-              <div className="md:col-span-1 lg:col-span-1">
+              <div className="md:col-span-1 lg:col-span-1"
+                style={{
+                  transform: `translate(${mousePosition.x * -8}px, ${mousePosition.y * -8}px)`,
+                }}
+              >
                 <div className="space-y-4">
                   <div className="relative">
                     <img src="/images/studio1.png" alt="Workshop tools" className="w-full h-32 object-cover rounded shadow-lg" />
@@ -398,6 +406,9 @@ const Home: React.FC = () => {
                 coffeeRing
                 enterFrom="right"
                 index={0}
+                style={{
+                  transform: `translate(${mousePosition.x * 12}px, ${mousePosition.y * 12}px)`,
+                }}
               />
 
               {/* Bottom Left - Community - Small */}
@@ -410,6 +421,9 @@ const Home: React.FC = () => {
                 stamp="notes"
                 enterFrom="left"
                 index={1}
+                style={{
+                  transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * 10}px)`,
+                }}
               />
 
               {/* Bottom Right - Sustainability - Small */}
@@ -422,16 +436,27 @@ const Home: React.FC = () => {
                 variant='note'
                 enterFrom="right"
                 index={2}
+                style={{
+                  transform: `translate(${mousePosition.x * 10}px, ${mousePosition.y * -10}px)`,
+                }}
               />
             </div>
 
             {/* Investigation board title */}
-            <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded shadow-md">
+            <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded shadow-md"
+              style={{
+                transform: `translate(${mousePosition.x * -5}px, ${mousePosition.y * -5}px)`,
+              }}
+            >
               <span className="text-sm font-bold text-stone-700">VISION BOARD</span>
             </div>
 
             {/* Additional sticky notes around the board */}
-            <div className="absolute top-12 right-12 space-y-3">
+            <div className="absolute top-12 right-12 space-y-3"
+              style={{
+                transform: `translate(${mousePosition.x * 7}px, ${mousePosition.y * 7}px)`,
+              }}
+            >
               <div className="bg-yellow-300 px-3 py-2 rounded shadow-lg transform rotate-3">
                 <span className="font-handwriting text-lg text-yellow-900 font-bold">INSPIRE</span>
               </div>
@@ -444,7 +469,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* More sticky notes in corners */}
-            <div className="absolute top-20 left-12 space-y-3">
+            <div className="absolute top-20 left-12 space-y-3"
+              style={{
+                transform: `translate(${mousePosition.x * -7}px, ${mousePosition.y * -7}px)`,
+              }}
+            >
               <div className="bg-blue-300 px-3 py-2 rounded shadow-lg transform -rotate-1">
                 <span className="font-handwriting text-lg text-blue-900 font-bold">EXPERIMENT</span>
               </div>
@@ -453,7 +482,11 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            <div className="absolute bottom-20 right-12 space-y-3">
+            <div className="absolute bottom-20 right-12 space-y-3"
+              style={{
+                transform: `translate(${mousePosition.x * 8}px, ${mousePosition.y * 8}px)`,
+              }}
+            >
               <div className="bg-orange-300 px-3 py-2 rounded shadow-lg transform rotate-1">
                 <span className="font-handwriting text-lg text-orange-900 font-bold">GROW</span>
               </div>
@@ -464,7 +497,8 @@ const Home: React.FC = () => {
 
             {/* Torn paper with handwritten goals (like your reference) */}
             <div className="absolute bottom-12 left-12 bg-amber-50 p-4 rounded shadow-lg transform -rotate-1" style={{
-              clipPath: 'polygon(0 0, 95% 0, 100% 10%, 100% 100%, 5% 100%, 0 90%)'
+              clipPath: 'polygon(0 0, 95% 0, 100% 10%, 100% 100%, 5% 100%, 0 90%)',
+              transform: `translate(${mousePosition.x * -9}px, ${mousePosition.y * 9}px) rotate(-1deg)`,
             }}>
               <div className="font-handwriting text-amber-900 font-bold space-y-1">
                 <div className="text-lg">EMPOWER CREATORS</div>
@@ -476,7 +510,8 @@ const Home: React.FC = () => {
 
             {/* Additional torn paper elements */}
             <div className="absolute top-1/6 right-8 bg-white p-3 rounded shadow-lg transform rotate-2" style={{
-              clipPath: 'polygon(0 0, 90% 0, 100% 15%, 100% 100%, 10% 100%, 0 85%)'
+              clipPath: 'polygon(0 0, 90% 0, 100% 15%, 100% 100%, 10% 100%, 0 85%)',
+              transform: `translate(${mousePosition.x * 6}px, ${mousePosition.y * -6}px) rotate(2deg)`,
             }}>
               <div className="font-handwriting text-stone-800 font-bold text-sm">
                 <div>IDEAS</div>
@@ -486,7 +521,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Process Photos - Polaroid Style */}
-            <div className="absolute top-24 left-1/4 space-y-2">
+            <div className="absolute top-24 left-1/4 space-y-2"
+              style={{
+                transform: `translate(${mousePosition.x * -11}px, ${mousePosition.y * -11}px)`,
+              }}
+            >
               <div className="bg-white p-2 rounded shadow-lg transform -rotate-1">
                 <img src="/images/studio1.png" alt="Process step 1" className="w-16 h-16 object-cover rounded" />
                 <div className="text-xs font-handwriting text-stone-600 mt-1">SKETCH</div>
@@ -498,7 +537,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Material Samples */}
-            <div className="absolute bottom-24 left-1/4 space-y-2">
+            <div className="absolute bottom-24 left-1/4 space-y-2"
+              style={{
+                transform: `translate(${mousePosition.x * -12}px, ${mousePosition.y * 12}px)`,
+              }}
+            >
               <div className="bg-amber-100 p-2 rounded shadow-lg transform rotate-1">
                 <div className="w-12 h-8 bg-amber-600 rounded mb-1"></div>
                 <div className="text-xs font-handwriting text-amber-800">OAK</div>
@@ -514,7 +557,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Timeline & Progress */}
-            <div className="absolute bottom-32 right-1/3 bg-white p-3 rounded shadow-lg transform -rotate-2">
+            <div className="absolute bottom-32 right-1/3 bg-white p-3 rounded shadow-lg transform -rotate-2"
+              style={{
+                transform: `translate(${mousePosition.x * 9}px, ${mousePosition.y * -9}px)`,
+              }}
+            >
               <div className="font-handwriting text-stone-800 font-bold text-sm space-y-1">
                 <div className="text-amber-600">STARTED: MAR 2024</div>
                 <div className="text-green-600">✓ SKETCH</div>
@@ -525,7 +572,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Collaborator Photos */}
-            <div className="absolute bottom-32 right-1/4 space-y-2">
+            <div className="absolute bottom-32 right-1/4 space-y-2"
+              style={{
+                transform: `translate(${mousePosition.x * 10}px, ${mousePosition.y * 10}px)`,
+              }}
+            >
               <div className="bg-white p-2 rounded-full shadow-lg transform rotate-1">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">A</span>
@@ -542,7 +593,8 @@ const Home: React.FC = () => {
 
             {/* Quote Card */}
             <div className="absolute top-1/3 left-8 bg-yellow-50 p-3 rounded shadow-lg transform rotate-1" style={{
-              clipPath: 'polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%)'
+              clipPath: 'polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%)',
+              transform: `translate(${mousePosition.x * -7}px, ${mousePosition.y * -7}px) rotate(1deg)`,
             }}>
               <div className="font-handwriting text-amber-900 text-sm italic">
                 "Every piece tells a story"
@@ -551,7 +603,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Technical Specs */}
-            <div className="absolute bottom-1/3 right-16 bg-gray-50 p-2 rounded shadow-lg transform -rotate-1">
+            <div className="absolute bottom-1/3 right-16 bg-gray-50 p-2 rounded shadow-lg transform -rotate-1"
+              style={{
+                transform: `translate(${mousePosition.x * 6}px, ${mousePosition.y * 6}px)`,
+              }}
+            >
               <div className="font-handwriting text-gray-800 text-xs space-y-1">
                 <div className="font-bold">SPECS</div>
                 <div>Wood: Oak 2cm</div>
@@ -561,7 +617,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Quality Check Card */}
-            <div className="absolute top-40 left-12 bg-green-50 p-2 rounded shadow-lg transform rotate-2">
+            <div className="absolute top-40 left-12 bg-green-50 p-2 rounded shadow-lg transform rotate-2"
+              style={{
+                transform: `translate(${mousePosition.x * -8}px, ${mousePosition.y * -8}px)`,
+              }}
+            >
               <div className="font-handwriting text-green-800 text-xs space-y-1">
                 <div className="font-bold">QUALITY</div>
                 <div>✓ Sanded</div>
@@ -572,7 +632,8 @@ const Home: React.FC = () => {
 
             {/* Customer Feedback */}
             <div className="absolute top-2/6 right-8 bg-pink-50 p-3 rounded shadow-lg transform -rotate-1" style={{
-              clipPath: 'polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%)'
+              clipPath: 'polygon(0 0, 100% 0, 100% 90%, 95% 100%, 0 100%)',
+              transform: `translate(${mousePosition.x * 7}px, ${mousePosition.y * -7}px) rotate(-1deg)`,
             }}>
               <div className="font-handwriting text-pink-800 text-xs">
                 <div className="font-bold">FEEDBACK</div>
@@ -582,7 +643,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Workshop Schedule */}
-            <div className="absolute bottom-80 left-20 bg-blue-50 p-8 rounded shadow-lg transform rotate-1">
+            <div className="absolute bottom-80 left-20 bg-blue-50 p-8 rounded shadow-lg transform rotate-1"
+              style={{
+                transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * 10}px)`,
+              }}
+            >
               <div className="font-handwriting text-blue-800 text-xl space-y-1">
                 <div className="font-bold">SCHEDULE</div>
                 <div>Mon: Design</div>
@@ -592,7 +657,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Inspiration Board */}
-            <div className="absolute top-56 left-1/3 bg-purple-50 p-4 rounded shadow-lg transform -rotate-2">
+            <div className="absolute top-56 left-1/3 bg-purple-50 p-4 rounded shadow-lg transform -rotate-2"
+              style={{
+                transform: `translate(${mousePosition.x * -9}px, ${mousePosition.y * -9}px)`,
+              }}
+            >
               <div className="font-handwriting text-purple-800 text-xs space-y-1">
                 <div className="font-bold">INSPIRATION</div>
                 <div>Nature textures</div>
@@ -602,7 +671,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Tool Checklist */}
-            <div className="absolute bottom-48 right-12 bg-orange-50 p-2 rounded shadow-lg transform rotate-1">
+            <div className="absolute bottom-48 right-12 bg-orange-50 p-2 rounded shadow-lg transform rotate-1"
+              style={{
+                transform: `translate(${mousePosition.x * 8}px, ${mousePosition.y * 8}px)`,
+              }}
+            >
               <div className="font-handwriting text-orange-800 text-xs space-y-1">
                 <div className="font-bold">TOOLS</div>
                 <div>✓ Chisel set</div>
@@ -613,7 +686,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Workshop Notes */}
-            <div className="absolute top-60 right-1/3 bg-yellow-50 p-2 rounded shadow-lg transform -rotate-1">
+            <div className="absolute top-60 right-1/3 bg-yellow-50 p-2 rounded shadow-lg transform -rotate-1"
+              style={{
+                transform: `translate(${mousePosition.x * 6}px, ${mousePosition.y * -6}px)`,
+              }}
+            >
               <div className="font-handwriting text-yellow-800 text-xs space-y-1">
                 <div className="font-bold">NOTES</div>
                 <div>Grain direction</div>
@@ -623,7 +700,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Collaboration Status */}
-            <div className="absolute bottom-56 left-1/3 bg-teal-50 p-2 rounded shadow-lg transform rotate-2">
+            <div className="absolute bottom-56 left-1/3 bg-teal-50 p-2 rounded shadow-lg transform rotate-2"
+              style={{
+                transform: `translate(${mousePosition.x * -7}px, ${mousePosition.y * 7}px)`,
+              }}
+            >
               <div className="font-handwriting text-teal-800 text-xs space-y-1">
                 <div className="font-bold">TEAM</div>
                 <div>Alex: Design ✓</div>
@@ -633,7 +714,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Measurement Notes */}
-            <div className="absolute top-96 left-1/4 bg-indigo-50 p-2 rounded shadow-lg transform rotate-1">
+            <div className="absolute top-96 left-1/4 bg-indigo-50 p-2 rounded shadow-lg transform rotate-1"
+              style={{
+                transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * -10}px)`,
+              }}
+            >
               <div className="font-handwriting text-indigo-800 text-xs space-y-1">
                 <div className="font-bold">DIMENSIONS</div>
                 <div>L: 30cm</div>
@@ -643,7 +728,11 @@ const Home: React.FC = () => {
             </div>
 
             {/* Workshop Wisdom */}
-            <div className="absolute bottom-80 right-1/6 bg-rose-50 p-6 rounded shadow-lg transform -rotate-2">
+            <div className="absolute bottom-80 right-1/6 bg-rose-50 p-6 rounded shadow-lg transform -rotate-2"
+              style={{
+                transform: `translate(${mousePosition.x * 12}px, ${mousePosition.y * 12}px)`,
+              }}
+            >
               <div className="font-handwriting text-rose-800 text-lg space-y-1">
                 <div className="font-bold">WISDOM</div>
                 <div>"Measure twice"</div>
@@ -654,8 +743,7 @@ const Home: React.FC = () => {
           </div>
 
           {/* Workbench Strip */}
-          <div className="relative border-t border-stone-700/40 pt-12">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-stretch">
               <CrumpledPaperNote
                 className="aspect-[5/4]"
                 variant="process"
@@ -701,7 +789,6 @@ const Home: React.FC = () => {
                 index={3}
               />
             </div>
-          </div>
         </div>
       </section>
       <StoriesSection/>
