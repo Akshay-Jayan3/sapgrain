@@ -10,8 +10,8 @@ const config: Config = {
     extend: {
       colors: {
         background: '#0d0d0d',
-        text: '#f2f0e9',
-        accent: '#c6a664',
+        text: '#6c5234',
+        accent: '#d97706', // amber-600
       },
       fontFamily: {
         heading: ['Playfair Display', 'serif'],

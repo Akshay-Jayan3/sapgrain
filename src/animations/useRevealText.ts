@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 interface RevealTextProps {
-  target: React.RefObject<HTMLElement>;
+  target: React.RefObject<HTMLElement | null>;
   delay?: number;
   duration?: number;
   yOffset?: number;
@@ -23,7 +23,7 @@ export const useRevealText = ({
     if (!element) return;
 
     gsap.fromTo(
-      element,
+      element as HTMLElement,
       {
         opacity: 0,
         y: yOffset,

@@ -147,7 +147,7 @@ const TornPaperHero: React.FC = () => {
         <div className="text-center p-8">
           <h1 
             ref={titleRef}
-            className="font-heading text-6xl md:text-8xl font-bold text-gray-800 mb-4 opacity-0 stop-motion"
+            className="font-heading text-6xl md:text-8xl font-bold text-stone-900 mb-4 opacity-0 stop-motion"
             style={{
               transform: `translate(${mousePosition.x * 5}px, ${mousePosition.y * 5}px)`,
             }}
@@ -157,7 +157,7 @@ const TornPaperHero: React.FC = () => {
           
           <h2 
             ref={subtitleRef}
-            className="text-3xl md:text-5xl font-body text-gray-700 mb-8 opacity-0 stop-motion"
+            className="text-3xl md:text-5xl font-body text-stone-700 mb-8 opacity-0 stop-motion"
             style={{
               transform: `translate(${mousePosition.x * 3}px, ${mousePosition.y * 3}px)`,
             }}

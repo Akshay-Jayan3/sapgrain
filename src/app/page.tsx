@@ -13,6 +13,7 @@ import TornPaper from '@/components/TornPaper';
 import FramedCreation from '@/components/FramedCreation';
 import CrumpledPaperNote from '@/components/CrumpledPaperNote';
 import StoriesSection from '@/components/StoriesSection';
+import CallToAction from '@/components/CallToAction';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,9 +66,14 @@ const Home: React.FC = () => {
   const taglineRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLAnchorElement>(null);
   const aboutSectionRef = useRef<HTMLElement>(null);
+  const aboutTextRef1 = useRef<HTMLElement>(null);
+  const aboutTextRef2 = useRef<HTMLElement>(null);
   // We will target About papers via class selectors instead of React refs
   const formRef = useRef<HTMLFormElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useRevealText({ target: aboutTextRef1 });
+  useRevealText({ target: aboutTextRef2, delay: 0.2 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -143,32 +149,7 @@ const Home: React.FC = () => {
 
     const ctx = gsap.context(() => {
       // Paper roll down animation for the entire about section content
-      const aboutContainer = aboutSection.querySelector('.container');
-      if (aboutContainer) {
-        gsap.fromTo(
-          aboutContainer,
-          {
-            y: -aboutContainer.clientHeight,
-            rotationX: 90, // Start rolled up (90 degrees rotated on X-axis)
-            transformOrigin: 'top center',
-            opacity: 0,
-          },
-          {
-            y: 0,
-            rotationX: 0, // End unrolled
-            opacity: 1,
-            duration: 4.5, // Further increased duration for an even slower animation
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: aboutSection,
-              start: 'top bottom',
-              end: 'center center',
-              scrub: 2, // Increased for a smoother, more delayed feel
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-      }
+      // Removed aboutContainer animation
 
       const leftPapers = gsap.utils.toArray<HTMLElement>('.about-paper-left');
       leftPapers.forEach((el) => {
@@ -244,7 +225,7 @@ const Home: React.FC = () => {
       <TornPaperHero />
 
       {/* About Section (Torn Paper layout) */}
-      <section id="about" ref={aboutSectionRef} className="relative w-full overflow-hidden py-24 bg-[url('/images/wood-grain.png')] bg-cover bg-fixed">
+      <section id="about" ref={aboutSectionRef} className="relative w-full overflow-hidden py-24 bg-[url('/images/cloth-grain.png')] bg-cover bg-fixed">
         <div className="absolute inset-0" />
 
         {/* Background torn paper layers */}
@@ -258,14 +239,14 @@ const Home: React.FC = () => {
             <TornPaper animateOnMount={false} rotation={-3} scale={1} x={0} y={0} zIndex={10} color="bg-white" className="about-paper-main w-full max-w-5xl h-auto min-h-[420px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-0">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-6 items-stretch w-full h-full">
                 <div className="flex flex-col justify-center p-8 md:p-10">
-                  <SectionHeading level="h2" className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                  <SectionHeading level="h2" className="text-4xl md:text-5xl font-bold text-stone-900 mb-4">
                     Our Journey
                   </SectionHeading>
-                  <p className="font-body text-base md:text-lg leading-relaxed text-gray-700 mb-4">
-                    Sapgrain began as a humble workshop, a sanctuary where raw materials were transformed into objects of beauty and purpose. Our hands, guided by a passion for traditional craftsmanship, meticulously shaped wood, clay, and pigment, breathing life into each creation.
+                  <p className="font-body text-base md:text-lg leading-relaxed text-stone-600 mb-4">
+                    <span ref={aboutTextRef1}>Sapgrain began as a humble workshop, a sanctuary where raw materials were transformed into objects of beauty and purpose. Our hands, guided by a passion for traditional craftsmanship, meticulously shaped wood, clay, and pigment, breathing life into each creation.</span>
                   </p>
-                  <p className="font-body text-base md:text-lg leading-relaxed text-gray-700">
-                    Over time, we realized the immense potential of merging our handcrafted ethos with the boundless possibilities of the digital realm. This journey from workshop to web has allowed us to share our philosophy and creations with a wider audience, inviting you into an immersive experience where the tactile meets the technological.
+                  <p className="font-body text-base md:text-lg leading-relaxed text-stone-600">
+                    <span ref={aboutTextRef2}>Over time, we realized the immense potential of merging our handcrafted ethos with the boundless possibilities of the digital realm. This journey from workshop to web has allowed us to share our philosophy and creations with a wider audience, inviting you into an immersive experience where the tactile meets the technological.</span>
                   </p>
                 </div>
                 <div className="relative min-h-[260px] md:min-h-[420px] w-full">
@@ -284,37 +265,56 @@ const Home: React.FC = () => {
       </section>
 
       {/* Creations Section */}
-      <section id="creations">
-        <div className="absolute inset-0"  />
-        <div className="container mx-auto relative p-16">
-          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-gray-800 mb-12 text-center">
-            Our Creations
-          </SectionHeading>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12">
-            {creations.map((item, index) => {
-              const sizeClass = index % 4 === 0 ? 'sm:col-span-1 lg:col-span-1 lg:row-span-1' : index % 4 === 1 ? 'sm:col-span-1 lg:col-span-1' : index % 4 === 2 ? 'sm:col-span-1' : 'sm:col-span-1';
-              const offsetClass = index % 6 === 0 ? 'translate-y-2' : index % 6 === 3 ? '-translate-y-4' : '';
-              return (
-                <FramedCreation
-                  key={item.id}
-                  src={item.src}
-                  alt={item.alt}
-                  title={item.title}
-                  index={index}
-                  displayMode="framed"
-                  className={`${sizeClass} ${offsetClass}`}
-                />
-              );
-            })}
+      <section id="creations" className="relative py-24 bg-[url('/images/rock-patterns.png')] bg-cover">
+        <div className="container mx-auto relative z-10 p-16">
+          <div className="relative h-[600px] md:h-[700px] lg:h-[1000px]">
+          <TornPaper
+                rotation={-1}
+                scale={1}
+                x={0}
+                y={0}
+                zIndex={5}
+                color="bg-white"
+                className="w-full max-w-xl h-60 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl"
+              >
+                <div className="flex flex-col gap-1 items-center justify-center h-full">
+                  <SectionHeading
+                    level="h2"
+                    className="text-4xl md:text-5xl font-bold text-stone-900 text-center py-4 font-heading"
+                  >
+                    Our Creations
+                  </SectionHeading>
+                  <Link href="/contact" className="inline-block bg-amber-600 text-white font-bold py-4 px-10 rounded-full shadow-lg hover:bg-amber-700 transition-all duration-300 transform hover:scale-105">
+                    view More
+                  </Link>
+                </div>
+              </TornPaper>
+            {creations.map((item, index) => (
+              <FramedCreation
+                key={item.id}
+                src={item.src}
+                alt={item.alt}
+                title={item.title}
+                index={index}
+                displayMode="framed"
+                className={`absolute
+                    ${index === 0 && 'top-0 left-0'}
+                    ${index === 1 && 'top-0 right-0'}
+                    ${index === 2 && 'bottom-0 left-0'}
+                    ${index === 3 && 'bottom-0 right-0'}
+                    w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 shadow-xl
+                  `}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* Studio Section */}
       <section id="studio" className="relative px-20 py-10" >
-        <div className="absolute inset-0"/>
+        <div className="absolute inset-0" />
         <div className="container mx-auto relative">
-          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-gray-800 mb-12 text-center">
+          <SectionHeading level="h2" className="text-5xl md:text-6xl font-bold text-stone-900 mb-12 text-center">
             Studio Notes
           </SectionHeading>
 
@@ -355,7 +355,7 @@ const Home: React.FC = () => {
                   transform: `translate(${mousePosition.x * 10}px, ${mousePosition.y * 10}px)`,
                 }}
               >
-                <img src="/images/creation1.png" alt="Featured Creation" className="w-48 h-48 object-cover rounded-lg shadow-2xl border-4 border-white" />
+                <img src="/images/creation1.png" alt="Featured Creation" className="w-64 h-64 object-cover rounded-lg shadow-2xl border-4 border-white" />
                 <div className="absolute -top-3 -right-3 w-10 h-10 bg-red-500 rounded-full border-4 border-white shadow-lg"></div>
                 <div className="absolute -bottom-3 -left-3 bg-yellow-200 px-4 py-2 rounded shadow-lg transform -rotate-3">
                   <span className="font-handwriting text-xl text-amber-800 font-bold">FEATURED</span>
@@ -370,85 +370,28 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12 relative" style={{ zIndex: 2 }}>
-              {/* Top Left - Tools */}
-              <div className="md:col-span-1 lg:col-span-1"
-                style={{
-                  transform: `translate(${mousePosition.x * -8}px, ${mousePosition.y * -8}px)`,
-                }}
-              >
-                <div className="space-y-4">
-                  <div className="relative">
-                    <img src="/images/studio1.png" alt="Workshop tools" className="w-full h-32 object-cover rounded shadow-lg" />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full border-2 border-white shadow-md"></div>
-                    <div className="absolute -bottom-2 -left-2 bg-yellow-200 px-2 py-1 rounded shadow-md transform -rotate-2">
-                      <span className="font-handwriting text-sm text-amber-800 font-bold">TOOLS</span>
-                    </div>
+            <div
+              className='flex items-center justify-center'
+              style={{
+                transform: `translate(${mousePosition.x * -8}px, ${mousePosition.y * -8}px)`,
+              }}
+            >
+              <div className="flex gap-4">
+                <div className="relative">
+                  <img src="/images/studio1.png" alt="Workshop tools" className="w-40 h-32 object-cover rounded shadow-lg" />
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full border-2 border-white shadow-md"></div>
+                  <div className="absolute -bottom-2 -left-2 bg-yellow-200 px-2 py-1 rounded shadow-md transform -rotate-2">
+                    <span className="font-handwriting text-sm text-amber-800 font-bold">TOOLS</span>
                   </div>
-                  <div className="relative">
-                    <img src="/images/studio2.png" alt="Materials" className="w-full h-24 object-cover rounded shadow-lg" />
-                    <div className="absolute -top-1 -left-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-white shadow-md"></div>
-                    <div className="absolute -bottom-1 -right-1 bg-pink-200 px-2 py-1 rounded shadow-md transform rotate-1">
-                      <span className="font-handwriting text-xs text-pink-800 font-bold">MATERIALS</span>
-                    </div>
+                </div>
+                <div className="relative">
+                  <img src="/images/studio2.png" alt="Materials" className="w-40 h-24 object-cover rounded shadow-lg" />
+                  <div className="absolute -top-1 -left-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-white shadow-md"></div>
+                  <div className="absolute -bottom-1 -right-1 bg-pink-200 px-2 py-1 rounded shadow-md transform rotate-1">
+                    <span className="font-handwriting text-xs text-pink-800 font-bold">MATERIALS</span>
                   </div>
                 </div>
               </div>
-
-              {/* Top Right - Craft Process - Small */}
-              <CrumpledPaperNote
-                className="w-40 h-40"
-                title="CRAFT"
-                text="Hands & tools"
-                tapeColor="kraft"
-                pin
-                stamp="research"
-                coffeeRing
-                enterFrom="right"
-                index={0}
-                style={{
-                  transform: `translate(${mousePosition.x * 12}px, ${mousePosition.y * 12}px)`,
-                }}
-              />
-
-              {/* Bottom Left - Community - Small */}
-              <CrumpledPaperNote
-                className="aspect-[3/4] w-40 h-40"
-                title="COMMUNITY"
-                text="Creators unite"
-                tapeColor="pink"
-                pin
-                stamp="notes"
-                enterFrom="left"
-                index={1}
-                style={{
-                  transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * 10}px)`,
-                }}
-              />
-
-              {/* Bottom Right - Sustainability - Small */}
-              <CrumpledPaperNote
-                className="aspect-[3/4] w-40 h-40"
-                title="SUSTAINABILITY"
-                text="Respect materials"
-                tapeColor="kraft"
-                pin
-                variant='note'
-                enterFrom="right"
-                index={2}
-                style={{
-                  transform: `translate(${mousePosition.x * 10}px, ${mousePosition.y * -10}px)`,
-                }}
-              />
-            </div>
-
-            {/* Investigation board title */}
-            <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded shadow-md"
-              style={{
-                transform: `translate(${mousePosition.x * -5}px, ${mousePosition.y * -5}px)`,
-              }}
-            >
-              <span className="text-sm font-bold text-stone-700">VISION BOARD</span>
             </div>
 
             {/* Additional sticky notes around the board */}
@@ -469,7 +412,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* More sticky notes in corners */}
-            <div className="absolute top-20 left-12 space-y-3"
+            <div className="absolute top-12 left-12 space-y-3"
               style={{
                 transform: `translate(${mousePosition.x * -7}px, ${mousePosition.y * -7}px)`,
               }}
@@ -537,7 +480,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* Material Samples */}
-            <div className="absolute bottom-24 left-1/4 space-y-2"
+            <div className="absolute bottom-24 left-[28%] space-y-2"
               style={{
                 transform: `translate(${mousePosition.x * -12}px, ${mousePosition.y * 12}px)`,
               }}
@@ -557,7 +500,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* Timeline & Progress */}
-            <div className="absolute bottom-32 right-1/3 bg-white p-3 rounded shadow-lg transform -rotate-2"
+            <div className="absolute bottom-16 right-1/3 bg-white p-3 rounded shadow-lg transform -rotate-2"
               style={{
                 transform: `translate(${mousePosition.x * 9}px, ${mousePosition.y * -9}px)`,
               }}
@@ -596,7 +539,7 @@ const Home: React.FC = () => {
               clipPath: 'polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%)',
               transform: `translate(${mousePosition.x * -7}px, ${mousePosition.y * -7}px) rotate(1deg)`,
             }}>
-              <div className="font-handwriting text-amber-900 text-sm italic">
+              <div className="font-handwriting text-amber-900 text-md italic">
                 "Every piece tells a story"
               </div>
               <div className="text-xs text-amber-700 mt-1">- Workshop Wisdom</div>
@@ -643,7 +586,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* Workshop Schedule */}
-            <div className="absolute bottom-80 left-20 bg-blue-50 p-8 rounded shadow-lg transform rotate-1"
+            <div className="absolute bottom-60 left-20 bg-blue-50 p-8 rounded shadow-lg transform rotate-1"
               style={{
                 transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * 10}px)`,
               }}
@@ -657,7 +600,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* Inspiration Board */}
-            <div className="absolute top-56 left-1/3 bg-purple-50 p-4 rounded shadow-lg transform -rotate-2"
+            <div className="absolute top-12 right-1/6 bg-purple-50 p-4 rounded shadow-lg transform -rotate-2"
               style={{
                 transform: `translate(${mousePosition.x * -9}px, ${mousePosition.y * -9}px)`,
               }}
@@ -686,7 +629,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* Workshop Notes */}
-            <div className="absolute top-60 right-1/3 bg-yellow-50 p-2 rounded shadow-lg transform -rotate-1"
+            <div className="absolute top-60 right-1/4 bg-yellow-50 p-2 rounded shadow-lg transform -rotate-1"
               style={{
                 transform: `translate(${mousePosition.x * 6}px, ${mousePosition.y * -6}px)`,
               }}
@@ -700,7 +643,7 @@ const Home: React.FC = () => {
             </div>
 
             {/* Collaboration Status */}
-            <div className="absolute bottom-56 left-1/3 bg-teal-50 p-2 rounded shadow-lg transform rotate-2"
+            <div className="absolute bottom-20 left-[36%] bg-teal-50 p-2 rounded shadow-lg transform rotate-2"
               style={{
                 transform: `translate(${mousePosition.x * -7}px, ${mousePosition.y * 7}px)`,
               }}
@@ -744,54 +687,55 @@ const Home: React.FC = () => {
 
           {/* Workbench Strip */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-10 items-stretch">
-              <CrumpledPaperNote
-                className="aspect-[5/4]"
-                variant="process"
-                title="Sketch"
-                text="Loose ideas and forms on paper."
-                tapeColor="blue"
-                pin
-                stamp="step 1"
-                enterFrom="left"
-                index={0}
-              />
-              <CrumpledPaperNote
-                className="aspect-[5/4]"
-                variant="process"
-                title="Prototype"
-                text="Test scale, balance, and feel."
-                tapeColor="kraft"
-                pin
-                stamp="step 2"
-                enterFrom="bottom"
-                index={1}
-              />
-              <CrumpledPaperNote
-                className="aspect-[5/4]"
-                variant="process"
-                title="Finish"
-                text="Refine edges, surface, and details."
-                tapeColor="pink"
-                pin
-                stamp="step 3"
-                enterFrom="bottom"
-                index={2}
-              />
-              <CrumpledPaperNote
-                className="aspect-[5/4]"
-                variant="process"
-                title="Digitize"
-                text="Capture, present, and share online."
-                tapeColor="blue"
-                pin
-                stamp="step 4"
-                enterFrom="right"
-                index={3}
-              />
-            </div>
+            <CrumpledPaperNote
+              className="aspect-[5/4]"
+              variant="process"
+              title="Sketch"
+              text="Loose ideas and forms on paper."
+              tapeColor="blue"
+              pin
+              stamp="step 1"
+              enterFrom="left"
+              index={0}
+            />
+            <CrumpledPaperNote
+              className="aspect-[5/4]"
+              variant="process"
+              title="Prototype"
+              text="Test scale, balance, and feel."
+              tapeColor="kraft"
+              pin
+              stamp="step 2"
+              enterFrom="bottom"
+              index={1}
+            />
+            <CrumpledPaperNote
+              className="aspect-[5/4]"
+              variant="process"
+              title="Finish"
+              text="Refine edges, surface, and details."
+              tapeColor="pink"
+              pin
+              stamp="step 3"
+              enterFrom="bottom"
+              index={2}
+            />
+            <CrumpledPaperNote
+              className="aspect-[5/4]"
+              variant="process"
+              title="Digitize"
+              text="Capture, present, and share online."
+              tapeColor="blue"
+              pin
+              stamp="step 4"
+              enterFrom="right"
+              index={3}
+            />
+          </div>
         </div>
       </section>
-      <StoriesSection/>
+      <StoriesSection />
+      <CallToAction />
     </main>
   );
 };
